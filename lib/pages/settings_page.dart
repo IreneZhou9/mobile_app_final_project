@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../providers/user_preferences_provider.dart';
 import '../themes/theme_provider.dart';
 
@@ -223,31 +222,6 @@ class SettingsPage extends StatelessWidget {
                           onTap: () => _showResetDialog(context, prefs),
                           contentPadding: EdgeInsets.zero,
                         ),
-                        
-                        const Divider(),
-                        
-                        ListTile(
-                          leading: const Icon(
-                            Icons.logout,
-                            color: Colors.red,
-                          ),
-                          title: Text(
-                            "Sign Out (Alternative)",
-                            style: prefs.getTextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "Alternative logout method if drawer doesn't work",
-                            style: prefs.getTextStyle(
-                              multiplier: 0.9,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                          onTap: () => _showAlternativeLogoutDialog(context, prefs),
-                          contentPadding: EdgeInsets.zero,
-                        ),
                       ],
                     ),
                   ),
@@ -328,83 +302,6 @@ class SettingsPage extends StatelessWidget {
                 );
               },
               child: const Text('Reset'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showAlternativeLogoutDialog(BuildContext context, UserPreferencesProvider prefs) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          title: Row(
-            children: [
-              Icon(Icons.logout, color: prefs.currentAccentColor),
-              const SizedBox(width: 12),
-              const Text('Alternative Sign Out'),
-            ],
-          ),
-          content: const Text('This is an alternative logout method. Are you sure you want to sign out?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              onPressed: () async {
-                Navigator.pop(context); // Close dialog
-                
-                // Show loading
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => AlertDialog(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(color: prefs.currentAccentColor),
-                        const SizedBox(height: 16),
-                        const Text('Signing out...'),
-                      ],
-                    ),
-                  ),
-                );
-                
-                try {
-                  // Direct Firebase logout
-                  await FirebaseAuth.instance.signOut();
-                  
-                  // Clear preferences
-                  prefs.clearPreferences();
-                  
-                  if (context.mounted) {
-                    Navigator.pop(context); // Close loading
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Successfully signed out via alternative method'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    Navigator.pop(context); // Close loading
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Alternative logout failed: $e'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                }
-              },
-              child: const Text('Sign Out', style: TextStyle(color: Colors.white)),
             ),
           ],
         );

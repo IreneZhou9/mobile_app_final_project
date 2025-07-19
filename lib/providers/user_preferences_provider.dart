@@ -10,7 +10,7 @@ class UserPreferencesProvider extends ChangeNotifier {
   bool _isLoaded = false;
 
   // database instance
-  final FireStoreDatabase _database = FireStoreDatabase();
+  final FirestoreDatabase _database = FirestoreDatabase();
 
   // getters
   double get fontSize => _fontSize;
@@ -121,16 +121,5 @@ class UserPreferencesProvider extends ChangeNotifier {
     _notificationsEnabled = true;
     notifyListeners();
     savePreferences();
-  }
-
-  // clear user preferences (for logout)
-  void clearPreferences() {
-    _fontSize = 16.0;
-    _themeMode = 'system';
-    _accentColor = 'blue';
-    _notificationsEnabled = true;
-    _isLoaded = false;
-    notifyListeners();
-    // Don't save preferences when clearing (user is logging out)
   }
 } 

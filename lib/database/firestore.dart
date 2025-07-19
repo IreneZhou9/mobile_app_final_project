@@ -4,7 +4,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class FireStoreDatabase {
+class FirestoreDatabase {
   // current logged in user
   User? user = FirebaseAuth.instance.currentUser;
   
@@ -125,8 +125,12 @@ class FireStoreDatabase {
   }
 
   // get user profile
-  Future<DocumentSnapshot> getUserProfile(String email) async {
-    return await users.doc(email).get();
+  Future<DocumentSnapshot> getUserProfile([String? email]) async {
+    final userEmail = email ?? user?.email;
+    if (userEmail == null) {
+      throw Exception('No user email provided');
+    }
+    return await users.doc(userEmail).get();
   }
 
   // save user preferences
@@ -195,5 +199,11 @@ class FireStoreDatabase {
     } catch (e) {
       print('Error creating welcome post: $e');
     }
+  }
+
+  // clear user state
+  void clearState() {
+    // _userPreferences = null; // This line was not in the new_code, so it's removed.
+    user = null;
   }
 }

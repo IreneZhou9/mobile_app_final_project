@@ -3,29 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_app_project/themes/theme_provider.dart';
 import 'package:mobile_app_project/providers/user_preferences_provider.dart';
+import 'package:mobile_app_project/database/firestore.dart';
 
 class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
+  final FirestoreDatabase database = FirestoreDatabase();
+  
+  MyDrawer({super.key});
 
   // sign out user
   Future<void> logout() async {
     try {
-      // Force sign out
-      await FirebaseAuth.instance.signOut();
+      // clear firestore state
+      database.clearState();
       
-      // Additional cleanup to ensure complete logout
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser == null) {
-        print('User signed out successfully');
-      } else {
-        print('Warning: User still appears to be signed in after signOut()');
-        // Force another signOut attempt
-        await FirebaseAuth.instance.signOut();
-      }
+      // sign out from firebase
+      await FirebaseAuth.instance.signOut();
     } catch (e) {
-      print('Error signing out: $e');
-      // The error will be handled in the UI where this method is called
-      rethrow;
+      debugPrint('Error signing out: $e');
     }
   }
 
@@ -309,70 +303,20 @@ class MyDrawer extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                // Show loading dialog
-                Navigator.pop(context); // Close confirmation dialog
-                Navigator.pop(context); // Close drawer
+                // Close dialog and drawer
+                Navigator.pop(context);
+                Navigator.pop(context);
                 
-                // Show loading indicator
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => AlertDialog(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(
-                          color: prefs.currentAccentColor,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Signing out...',
-                          style: prefs.getTextStyle(
-                            color: Theme.of(context).colorScheme.inversePrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                // Perform logout
+                await logout();
                 
-                try {
-                  await logout();
-                  // Clear user preferences after successful logout
-                  if (context.mounted) {
-                    Provider.of<UserPreferencesProvider>(context, listen: false).clearPreferences();
-                  }
-                  // If we reach here, logout was successful
-                  if (context.mounted) {
-                    Navigator.pop(context); // Close loading dialog
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Successfully signed out'),
-                        backgroundColor: Colors.green,
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  }
-                } catch (e) {
-                  // Handle logout error
-                  if (context.mounted) {
-                    Navigator.pop(context); // Close loading dialog
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error signing out: ${e.toString()}'),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 3),
-                        action: SnackBarAction(
-                          label: 'Retry',
-                          textColor: Colors.white,
-                          onPressed: () {
-                            _showLogoutDialog(context, prefs);
-                          },
-                        ),
-                      ),
-                    );
-                  }
+                // Navigate to auth page and clear stack
+                if (context.mounted) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/',
+                    (route) => false,
+                  );
                 }
               },
               style: ElevatedButton.styleFrom(

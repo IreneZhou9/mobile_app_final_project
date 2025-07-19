@@ -41,9 +41,10 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Nova - Social Platform',
-            home: const AuthPage(),
             theme: themeProvider.themeData,
+            initialRoute: '/',
             routes: {
+              '/': (context) => const AuthPage(),
               '/login_register_page': (context) => const LoginOrRegister(),
               '/home_page': (context) => HomePage(),
               '/profile_page': (context) => ProfilePage(),

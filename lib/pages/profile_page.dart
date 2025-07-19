@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin {
   // database access
-  final FireStoreDatabase database = FireStoreDatabase();
+  final FirestoreDatabase database = FirestoreDatabase();
 
   // current logged in user
   final User? currentUser = FirebaseAuth.instance.currentUser;
@@ -43,8 +43,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return Consumer<UserPreferencesProvider>(
       builder: (context, prefs, child) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
           resizeToAvoidBottomInset: false, // 防止键盘弹出时的布局问题
           body: SafeArea(
             child: CustomScrollView(
@@ -69,9 +69,9 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                       ),
                       child: FutureBuilder<DocumentSnapshot>(
                         future: getUserProfile(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Center(
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
                               child: CircularProgressIndicator(color: Colors.white),
                             );
                           }
@@ -254,12 +254,12 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
             ),
             const SizedBox(height: 20),
 
-            // username
-            Text(
+                  // username
+                  Text(
               username,
               style: prefs.getTextStyle(
                 multiplier: 1.5, // 24/16
-                fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),

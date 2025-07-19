@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // database access
-  final FireStoreDatabase database = FireStoreDatabase();
+  final FirestoreDatabase database = FirestoreDatabase();
 
   // input controller
   final TextEditingController newPostController = TextEditingController();
@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       );
 
       // clear form
-      newPostController.clear();
+    newPostController.clear();
       setState(() {
         isPrivatePost = false;
         _selectedImage = null;
@@ -189,10 +189,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Consumer<UserPreferencesProvider>(
       builder: (context, prefs, child) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
           resizeToAvoidBottomInset: true, // 确保键盘弹出时调整布局
-          appBar: AppBar(
+      appBar: AppBar(
             title: Text(
               "N O V A",
               style: prefs.getTextStyle(
@@ -202,8 +202,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
             backgroundColor: Theme.of(context).colorScheme.background,
-            foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-            elevation: 0,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+        elevation: 0,
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(48),
               child: Material(
@@ -238,7 +238,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          drawer: const MyDrawer(),
+          drawer: MyDrawer(),
           body: Column(
             children: [
               // post creation section
@@ -405,9 +405,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: _getPostsStream(),
-                  builder: (context, snapshot) {
+            builder: (context, snapshot) {
                     // loading state
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     }
 
@@ -512,14 +512,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ),
                             ),
                           ],
-                        ),
-                      );
-                    }
+                  ),
+                );
+              }
 
                     // render posts list
                     return ListView.builder(
                       itemCount: filteredPosts.length,
-                      itemBuilder: (context, index) {
+                  itemBuilder: (context, index) {
                         final post = filteredPosts[index];
                         final data = post.data() as Map<String, dynamic>;
                         

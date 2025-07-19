@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         await prefsProvider.loadPreferences();
         
         // Create welcome post if user doesn't have any posts
-        final database = FireStoreDatabase();
+        final database = FirestoreDatabase();
         await database.createWelcomePost();
       }
 

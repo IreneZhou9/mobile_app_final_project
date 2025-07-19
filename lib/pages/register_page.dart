@@ -25,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController confirmPwController = TextEditingController();
 
   // database instance
-  final FireStoreDatabase database = FireStoreDatabase();
+  final FirestoreDatabase database = FirestoreDatabase();
 
   // handle user registration
   void registerUser() async {
